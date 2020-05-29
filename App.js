@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList } from 'react-native';
 
 export default function App() {
   const [enteredGoal, setEnteredGoal] = useState('');
-  const [goals, setGoals] = useState([]); 
+  const [goals, setGoals] = useState([]);
 
   const goalInputHandler = (enteredText) => {
     setEnteredGoal(enteredText);
-  }
+  };
 
   const addGoalHandler = () => {
-    setGoals(currentGoals => [...currentGoals, enteredGoal]);
-  }
+    setGoals(currentGoals => [
+      ...currentGoals, 
+      {key: Math.random().toString(), value: enteredGoal}
+      ]);
+  };
+
 
   return (
     <View style={styles.screen}>
@@ -24,9 +28,14 @@ export default function App() {
         <Button title = "ADD" onPress={addGoalHandler}/>
       </View>
 
-      <View>
-        {goals.map((goal) => <Text>{goal}</Text>)}
-      </View>
+      <FlatList
+      keyExtractor = {(item, index) => item.key}
+      data={goals} 
+      renderItem={itemData => (
+      <View style={styles.listItem}>
+        <Text> {itemData.item.value}</Text>
+        </View>
+      )}/>
     </View>
   );
 }
@@ -45,4 +54,11 @@ const styles = StyleSheet.create({
   borderWidth: 1,
   padding: 10,
   width: '80%'},
+  listItem: {
+    padding: 10,
+    marginVertical: 10,
+    backgroundColor: '#ccc',
+    borderColor: "black",
+    borderWidth: 1,
+    },
 });
